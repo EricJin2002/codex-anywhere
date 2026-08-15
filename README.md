@@ -1,5 +1,7 @@
 # codex-anywhere
 
+English | [简体中文](README.zh-CN.md)
+
 Turn a Linux server into a Codex host you can reach directly from your phone—without keeping a personal Windows or macOS computer online as a relay.
 
 `codex-anywhere` helps an AI agent configure the server-side Codex Remote daemon, launch the official phone pairing flow, and connect Codex CLI, ChatGPT Remote/mobile, and the Codex VS Code extension to one shared app-server. The result is one synchronized workspace and conversation history across terminal, phone, and editor.
