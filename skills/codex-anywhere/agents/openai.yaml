@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Anywhere"
+  short_description: "Connect phone, CLI, and VS Code to one server"
+  default_prompt: "Use $codex-anywhere to connect my phone directly to this Codex server and synchronize its CLI and VS Code sessions."

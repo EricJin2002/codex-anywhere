@@ -1,0 +1,16 @@
+# Private, machine-specific notes. Never commit these.
+/private/
+/CODEX_SHARED_APP_SERVER_RUNBOOK.md
+
+# Local configuration and secrets.
+.env
+.env.*
+*.local
+
+# Editor and OS noise.
+.DS_Store
+.vscode/
+
+# Test artifacts.
+.tmp/
+tmp/

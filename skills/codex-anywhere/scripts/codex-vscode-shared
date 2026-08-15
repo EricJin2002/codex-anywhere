@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+codex_home="${CODEX_HOME:-$HOME/.codex}"
+control_socket="${CODEX_ANYWHERE_SOCKET:-$codex_home/app-server-control/app-server-control.sock}"
+bridge="${CODEX_ANYWHERE_BRIDGE:-${XDG_DATA_HOME:-$HOME/.local/share}/codex-anywhere/codex-stdio-ws-bridge.mjs}"
+node_bin="${CODEX_ANYWHERE_NODE_BIN:-}"
+codex_bin="${CODEX_ANYWHERE_CODEX_BIN:-}"
+
+if [[ -z "$node_bin" ]]; then
+    node_bin="$(command -v node || true)"
+fi
+
+if [[ -z "$codex_bin" ]]; then
+    standalone="$codex_home/packages/standalone/current/bin/codex"
+    if [[ -x "$standalone" ]]; then
+        codex_bin="$standalone"
+    else
+        codex_bin="$(command -v codex || true)"
+    fi
+fi
+
+if [[ -z "$codex_bin" || ! -x "$codex_bin" ]]; then
+    echo "codex-anywhere: cannot find an executable Codex CLI." >&2
+    echo "Set CODEX_ANYWHERE_CODEX_BIN to its absolute path." >&2
+    exit 1
+fi
+
+for arg in "$@"; do
+    if [[ "$arg" == "app-server" ]]; then
+        if [[ -z "$node_bin" || ! -x "$node_bin" ]]; then
+            echo "codex-anywhere: cannot find Node.js." >&2
+            echo "Set CODEX_ANYWHERE_NODE_BIN to its absolute path." >&2
+            exit 1
+        fi
+        if [[ ! -f "$bridge" ]]; then
+            echo "codex-anywhere: bridge is missing: $bridge" >&2
+            echo "Run the codex-anywhere installer again." >&2
+            exit 1
+        fi
+        if [[ ! -S "$control_socket" ]]; then
+            echo "codex-anywhere: managed app-server socket is unavailable: $control_socket" >&2
+            echo "Start it with 'codex remote-control start' after configuring network access." >&2
+            exit 1
+        fi
+
+        exec "$node_bin" "$bridge" "$control_socket"
+    fi
+done
+
+exec "$codex_bin" "$@"
